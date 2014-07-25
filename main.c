@@ -29,6 +29,7 @@
 #include "spindle_control.h"
 #include "coolant_control.h"
 #include "motion_control.h"
+#include "laser_control.h"
 #include "limits.h"
 #include "probe.h"
 #include "report.h"
@@ -45,7 +46,7 @@ int main(void)
   settings_init(); // Load grbl settings from EEPROM
   stepper_init();  // Configure stepper pins and interrupt timers
   system_init();   // Configure pinout pins and pin-change interrupt
-  
+
   memset(&sys, 0, sizeof(sys));  // Clear all system variables
   sys.abort = true;   // Set abort to complete initialization
   sei(); // Enable interrupts
@@ -73,8 +74,9 @@ int main(void)
     gc_init(); // Set g-code parser to default state
     spindle_init();
     coolant_init();
-    limits_init(); 
+    limits_init();
     probe_init();
+    laser_init();
     plan_reset(); // Clear block buffer and planner variables
     st_reset(); // Clear stepper subsystem variables.
 

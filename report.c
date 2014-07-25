@@ -32,6 +32,7 @@
 #include "settings.h"
 #include "gcode.h"
 #include "coolant_control.h"
+#include "laser_control.h"
 #include "planner.h"
 #include "spindle_control.h"
 #include "stepper.h"
@@ -191,7 +192,8 @@ void report_grbl_settings() {
   printPgmString(PSTR(" (homing feed, mm/min)\r\n$28=")); printFloat_SettingValue(settings.homing_seek_rate);
   printPgmString(PSTR(" (homing seek, mm/min)\r\n$29=")); print_uint8_base10(settings.homing_debounce_delay);
   printPgmString(PSTR(" (homing debounce, msec)\r\n$30=")); printFloat_SettingValue(settings.homing_pulloff);
-  printPgmString(PSTR(" (homing pull-off, mm)\r\n")); 
+  printPgmString(PSTR(" (homing pull-off, mm)\r\n$42=")); print_uint8_base10(settings.laser_mode);
+  printPgmString(PSTR(" (laser enabled, bool)\r\n"));
 }
 
 
@@ -297,6 +299,11 @@ void report_gcode_modes()
     #ifdef ENABLE_M7
       case COOLANT_MIST_ENABLE : printPgmString(PSTR(" M7")); break;
     #endif
+  }
+
+  switch (gc_state.modal.laser) {
+    case LASER_DISABLE : printPgmString(PSTR(" M41")); break;
+    case LASER_ENABLE : printPgmString(PSTR(" M42")); break;
   }
   
   printPgmString(PSTR(" T"));

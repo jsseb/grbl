@@ -26,6 +26,7 @@
 #include "motion_control.h"
 #include "spindle_control.h"
 #include "coolant_control.h"
+#include "laser_control.h"
 #include "probe.h"
 #include "report.h"
 
@@ -301,6 +302,13 @@ uint8_t gc_execute_line(char *line)
               case 9: gc_block.modal.coolant = COOLANT_DISABLE; break;
             }
             break;
+          case 41: case 42:
+          	word_bit = MODAL_GROUP_M20;
+          	switch(int_value) {
+          		case 41: gc_block.modal.laser = LASER_DISABLE; break;
+          		case 42: gc_block.modal.laser = LASER_ENABLE; break;
+          	}
+          	break;
           default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND); // [Unsupported M command]
         }            
       
@@ -880,6 +888,12 @@ uint8_t gc_execute_line(char *line)
     gc_state.modal.coord_select = gc_block.modal.coord_select;
     memcpy(gc_state.coord_system,coordinate_data,sizeof(coordinate_data));
   }
+
+  // [20. Laser control]
+  if (gc_state.modal.laser != gc_block.modal.laser) {
+    gc_state.modal.laser = gc_block.modal.laser;
+    laser_run(gc_state.modal.laser);
+  }
   
   // [16. Set path control mode ]: NOT SUPPORTED
   
@@ -1020,4 +1034,5 @@ uint8_t gc_execute_line(char *line)
    group 9 = {M48, M49} enable/disable feed and speed override switches
    group 10 = {G98, G99} return mode canned cycles
    group 13 = {G61, G61.1, G64} path control mode
+   group 20 = {M41, M42} Laser control
 */

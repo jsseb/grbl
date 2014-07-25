@@ -92,7 +92,8 @@ void settings_reset() {
   settings.stepper_idle_lock_time = DEFAULT_STEPPER_IDLE_LOCK_TIME;
   settings.max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL);
   settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
-  settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);    
+  settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
+  settings.laser_mode = DEFAULT_LASER_MODE;
   write_global_settings();
 }
 
@@ -219,6 +220,7 @@ uint8_t settings_store_global_setting(int parameter, float value) {
     case 28: settings.homing_seek_rate = value; break;
     case 29: settings.homing_debounce_delay = round(value); break;
     case 30: settings.homing_pulloff = value; break;
+    case 42: settings.laser_mode = value; break;
     default: 
       return(STATUS_INVALID_STATEMENT);
   }
